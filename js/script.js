@@ -1,66 +1,96 @@
-const typingText = document.querySelector('.typing-text p'),
-inpField = document.querySelector('.wrapper .input-field input');
-timeTag = document.querySelector('.time span b'),
-mistakeTag = document.querySelector('.mistake span');
+const typingText = document.querySelector(".typing-text p"),
+inpField = document.querySelector(".wrapper .input-field"),
+tryAgainBtn = document.querySelector(".content button"),
+timeTag = document.querySelector(".time span b"),
+mistakeTag = document.querySelector(".mistake span"),
+wpmTag = document.querySelector(".wpm span"),
+cpmTag = document.querySelector(".cpm span");
+let p = document.querySelector(".head p");
+
+
 
 let timer,
 maxTime = 60,
 timeLeft = maxTime,
-charIndex = mistakes = 0;
+charIndex = mistakes = isTyping = 0;
 
-
-
-function randomParagraph(){
-    // Get the paragraphs
-    let randIndex = Math.floor(Math.random() * paragraphs.length);
-    // Split the paragraphs into characters
-    paragraphs[randIndex].split("").forEach(span => {
-        let spanTag = `<span>${span}</span>`;
-        typingText.innerHTML += spanTag;
+function loadParagraph() {
+    const ranIndex = Math.floor(Math.random() * paragraphs.length);
+    typingText.innerHTML = "";
+    paragraphs[ranIndex].split("").forEach(char => {
+        let span = `<span>${char}</span>`
+        typingText.innerHTML += span;
     });
-    // focusing input field on keydown or click event
+    typingText.querySelectorAll("span")[0].classList.add("active");
     document.addEventListener("keydown", () => inpField.focus());
     typingText.addEventListener("click", () => inpField.focus());
 }
 
-function initTyping(){
-    const characters = typingText.querySelectorAll('span');
+function initTyping() {
+    let characters = typingText.querySelectorAll("span");
     let typedChar = inpField.value.split("")[charIndex];
-    timer = setInterval(initTimer, 1000);
-    if(typedChar == null){
-        charIndex --; // decrement the character index
-        if(characters[charIndex].classList.contains("correct")){
-            mistakes--;
-    }
-    else{
-        
-            if(characters[charIndex].innerHTML === typedChar){
-                // if the character is correct show the green color
-                // correct class else  add the incorrect class
-                characters[charIndex].classList.add("correct");
+    if(charIndex < characters.length - 1 && timeLeft > 0) {
+        if(!isTyping) {
+            timer = setInterval(initTimer, 1000);
+            isTyping = true;
+        }
+        if(typedChar == null) {
+            if(charIndex > 0) {
+                charIndex--;
+                if(characters[charIndex].classList.contains("incorrect")) {
+                    mistakes--;
+                }
+                characters[charIndex].classList.remove("correct", "incorrect");
             }
-            else{
-                mistake++;
+        } else {
+            if(characters[charIndex].innerText == typedChar) {
+                characters[charIndex].classList.add("correct");
+            } else {
+                mistakes++;
                 characters[charIndex].classList.add("incorrect");
             }
-            charIndex++; // increment the character index
+            charIndex++;
+        }
+        characters.forEach(span => span.classList.remove("active"));
+        characters[charIndex].classList.add("active");
 
-    }
-    characters.forEach(span => span.classList.remove("active"));
-    characters[charIndex].classList.add("active");
+        let wpm = Math.round(((charIndex - mistakes)  / 5) / (maxTime - timeLeft) * 60);
+        wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
+        
+        wpmTag.innerText = wpm;
+        mistakeTag.innerText = mistakes;
+        cpmTag.innerText = charIndex - mistakes;
+    } else {
+        clearInterval(timer);
+        inpField.value = "";
+    }   
+}
 
-    mistakeTag.innerHTML = mistakes;
-    }
-}   
-
-function initTimer(){
-    if(timeLeft > 0){
+function initTimer() {
+    if(timeLeft > 0) {
         timeLeft--;
         timeTag.innerText = timeLeft;
-    } else{
+        let wpm = Math.round(((charIndex - mistakes)  / 5) / (maxTime - timeLeft) * 60);
+        wpmTag.innerText = wpm;
+    } else {
         clearInterval(timer);
     }
 }
 
-randomParagraph();
+function resetGame() {
+    loadParagraph();
+    clearInterval(timer);
+    timeLeft = maxTime;
+    charIndex = mistakes = isTyping = 0;
+    inpField.value = "";
+    timeTag.innerText = timeLeft;
+    wpmTag.innerText = 0;
+    mistakeTag.innerText = 0;
+    cpmTag.innerText = 0;
+}
+
+
+loadParagraph();
 inpField.addEventListener("input", initTyping);
+tryAgainBtn.addEventListener("click", resetGame);
+
