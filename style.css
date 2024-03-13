@@ -1,0 +1,129 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #17a2b8;
+
+}
+.wrapper{
+    width: 770px;
+    padding: 35px;
+    background: #fff;
+    border-radius: 10px;
+
+}
+.wrapper .content-box{
+    padding: 13px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.content-box .typing-text{
+    width: 0;
+
+}
+.typing-text::-webkit-scrollbar{
+    width: 0;
+}
+.typing-text p{
+    font-size: 15px;
+   text-align: justify;
+   letter-spacing: 1px;
+   word-break: break-all;
+}
+.typing-text p span{
+    position: relative;
+    transition: 0.3s;
+}
+.typing-text p span.correct{
+    color: green;
+
+}
+.typing-text p span.incorrect{
+    color: red;
+    background-color: pink;
+    outline: 1px solid #fff;
+    border-radius: 5px;
+
+}
+.typing-text p span.active{
+    color: #17a2b8;
+}
+.typing-text p span.active::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    background: #17a2b8;
+    animation: blink 1s ease-in-out infinite;
+}
+@keyframes blink{
+    50%{
+        opacity: 1;
+    }
+    
+}
+.content-box .content{
+    display: flex;
+   
+    padding: 12px 0; 
+    justify-content: space-between; 
+    
+}
+.content button{
+    border: none;
+    outline: none;
+    width: 70px;
+    padding: 5px 0;
+    cursor: pointer;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 5px;
+    background: #17a2b8;
+    margin-left: 20px;
+    transition: transform 0.3s ease;
+    font-size: 14px;
+}
+
+.content .result-details{
+    padding: 10px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    
+    border: 1px solid #ccc;
+    margin-top: 17px;
+
+}
+.result-details li{
+    list-style: none;
+    display: flex;
+    height: 22px;
+    align-items: center ;
+}
+.result-details li:not(:first-child)   {
+    padding-left: 9px;
+    border-left: 1px solid #ccc;
+}
+.result-details li p{
+    font-size: 19px;
+}
+.result-details li span{
+    display: block;
+    font-size: 20px;
+    margin-left: 10px;
+}
+.result-details li:not(:first-child) span{
+    font-weight: 500;
+}
+.result-details li b{
+    font-weight: 500; 
+}
